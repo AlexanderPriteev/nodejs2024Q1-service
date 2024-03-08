@@ -1,13 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { env } from 'node:process';
-import newDB from './utils/createDB';
+import { ValidationPipe } from '@nestjs/common';
 
 const PORT = env.PORT || 4000;
-const memoryDB = newDB();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(PORT);
 }
 bootstrap();

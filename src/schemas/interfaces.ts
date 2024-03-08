@@ -1,7 +1,7 @@
 export interface IUser {
   id: string;
   login: string;
-  password: string;
+  password?: string;
   version: number;
   createdAt: number;
   updatedAt: number;
@@ -34,6 +34,11 @@ export interface IFavorites {
   tracks: string[];
 }
 
+export interface ICreateUserDto {
+  login: string;
+  password: string;
+}
+
 export interface IUpdatePasswordDto {
   oldPassword: string;
   newPassword: string;
@@ -46,10 +51,10 @@ export interface IFavoritesResponse {
 }
 
 export interface IDB {
-  users: Map<string, IUser[]>;
-  artists: Map<string, IArtist[]>;
-  albums: Map<string, IAlbum[]>;
-  tracks: Map<string, ITrack[]>;
+  users: Map<string, IUser>;
+  artists: Map<string, IArtist>;
+  albums: Map<string, IAlbum>;
+  tracks: Map<string, ITrack>;
   favorites: {
     artists: Set<string>;
     albums: Set<string>;
