@@ -2,19 +2,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { memoryDB } from '../database/memoryDB';
 import { v4 as uuidv4, validate } from 'uuid';
-import {
-  ICreateTrackDto,
-  ITrack,
-  IUpdateTrackDto,
-} from './schemas/track.interface';
+import { CreateTrackDto, Track, UpdateTrackDto } from './track.model';
 
 @Injectable()
 export class TrackService {
-  getTracks(): ITrack[] {
+  getTracks(): Track[] {
     return Array.from(memoryDB.tracks.values());
   }
 
-  getTrack(id: string): ITrack {
+  getTrack(id: string): Track {
     if (!validate(id)) {
       throw new HttpException('Invalid trackID', HttpStatus.BAD_REQUEST);
     }
@@ -23,8 +19,8 @@ export class TrackService {
     throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
   }
 
-  postTrack(dto: ICreateTrackDto): ITrack {
-    const newTrack: ITrack = {
+  postTrack(dto: CreateTrackDto): Track {
+    const newTrack: Track = {
       id: uuidv4(),
       name: dto.name,
       artistId: dto.artistId || null,
@@ -35,7 +31,7 @@ export class TrackService {
     return newTrack;
   }
 
-  putTrack(id: string, dto: IUpdateTrackDto): ITrack {
+  putTrack(id: string, dto: UpdateTrackDto): Track {
     if (!validate(id)) {
       throw new HttpException('Invalid trackID', HttpStatus.BAD_REQUEST);
     }

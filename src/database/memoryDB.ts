@@ -1,14 +1,14 @@
-import { IDB } from './schemas/interfaces';
-import { IUser } from '../user/schemas/user.interface';
-import { IArtist } from '../artist/schemas/artist.interface';
-import { IAlbum } from '../album/schemas/album.interface';
-import { ITrack } from '../track/schemas/track.interface';
+import { IDB } from './interface';
+import { Track } from '../track/track.model';
+import { User } from '../user/user.model';
+import { Album } from '../album/album.model';
+import { Artist } from '../artist/artist.model';
 
 export const memoryDB: IDB = {
-  users: new Map<string, IUser>(),
-  artists: new Map<string, IArtist>(),
-  albums: new Map<string, IAlbum>(),
-  tracks: new Map<string, ITrack>(),
+  users: new Map<string, User>(),
+  artists: new Map<string, Artist>(),
+  albums: new Map<string, Album>(),
+  tracks: new Map<string, Track>(),
   favorites: {
     artists: new Set<string>(),
     albums: new Set<string>(),

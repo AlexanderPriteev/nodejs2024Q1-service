@@ -10,35 +10,48 @@ import {
   Put,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
-import { MCreateTrackDto, MUpdateTrackDto } from './schemas/track.model';
-import { ITrack } from './schemas/track.interface';
+import { CreateTrackDto, Track, UpdateTrackDto } from './track.model';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Track')
 @Controller('track')
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Get()
-  getUsers(): ITrack[] {
+  @ApiResponse({ status: 200, type: [Track] })
+  getUsers(): Track[] {
     return this.trackService.getTracks();
   }
 
   @Get(':id')
-  getUser(@Param('id') id: string): ITrack {
+  @ApiResponse({ status: 200, type: Track })
+  @ApiResponse({ status: 400, description: 'trackId is invalid' })
+  @ApiResponse({ status: 404, description: 'Track not found' })
+  getUser(@Param('id') id: string): Track {
     return this.trackService.getTrack(id);
   }
 
   @Post()
-  postUser(@Body() dto: MCreateTrackDto): ITrack {
+  @ApiResponse({ status: 201, type: Track })
+  @ApiResponse({ status: 400, description: 'Does not contain required fields' })
+  postUser(@Body() dto: CreateTrackDto): Track {
     return this.trackService.postTrack(dto);
   }
 
   @Put(':id')
-  putUser(@Param('id') id: string, @Body() dto: MUpdateTrackDto): ITrack {
+  @ApiResponse({ status: 200, type: Track })
+  @ApiResponse({ status: 400, description: 'trackId is invalid' })
+  @ApiResponse({ status: 404, description: 'Track not found' })
+  putUser(@Param('id') id: string, @Body() dto: UpdateTrackDto): Track {
     return this.trackService.putTrack(id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiResponse({ status: 204, description: 'Track removed' })
+  @ApiResponse({ status: 400, description: 'trackId is invalid' })
+  @ApiResponse({ status: 404, description: 'Track not found' })
   deleteUser(@Param('id') id: string) {
     return this.trackService.deleteTrack(id);
   }

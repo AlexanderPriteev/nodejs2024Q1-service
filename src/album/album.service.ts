@@ -1,19 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { memoryDB } from '../database/memoryDB';
 import { v4 as uuidv4, validate } from 'uuid';
-import {
-  IAlbum,
-  ICreateAlbumDto,
-  IUpdateAlbumDto,
-} from './schemas/album.interface';
+import { Album, CreateAlbumDto, UpdateAlbumDto } from './album.model';
 
 @Injectable()
 export class AlbumService {
-  getAlbums(): IAlbum[] {
+  getAlbums(): Album[] {
     return Array.from(memoryDB.albums.values());
   }
 
-  getAlbum(id: string): IAlbum {
+  getAlbum(id: string): Album {
     if (!validate(id)) {
       throw new HttpException('Invalid AlbumID', HttpStatus.BAD_REQUEST);
     }
@@ -22,8 +18,8 @@ export class AlbumService {
     throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
   }
 
-  postAlbum(dto: ICreateAlbumDto): IAlbum {
-    const newAlbum: IAlbum = {
+  postAlbum(dto: CreateAlbumDto): Album {
+    const newAlbum: Album = {
       id: uuidv4(),
       name: dto.name,
       year: dto.year,
@@ -33,7 +29,7 @@ export class AlbumService {
     return newAlbum;
   }
 
-  putAlbum(id: string, dto: IUpdateAlbumDto): IAlbum {
+  putAlbum(id: string, dto: UpdateAlbumDto): Album {
     if (!validate(id)) {
       throw new HttpException('Invalid AlbumID', HttpStatus.BAD_REQUEST);
     }

@@ -1,19 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { memoryDB } from '../database/memoryDB';
 import { v4 as uuidv4, validate } from 'uuid';
-import {
-  IArtist,
-  ICreateArtistDto,
-  IUpdateArtistDto,
-} from './schemas/artist.interface';
+import { Artist, CreateArtistDto, UpdateArtistDto } from './artist.model';
 
 @Injectable()
 export class ArtistService {
-  getArtists(): IArtist[] {
+  getArtists(): Artist[] {
     return Array.from(memoryDB.artists.values());
   }
 
-  getArtist(id: string): IArtist {
+  getArtist(id: string): Artist {
     if (!validate(id)) {
       throw new HttpException('Invalid ArtistID', HttpStatus.BAD_REQUEST);
     }
@@ -22,17 +18,17 @@ export class ArtistService {
     throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
   }
 
-  postArtist(dto: ICreateArtistDto): IArtist {
-    const newArtist: IArtist = {
+  postArtist(dto: CreateArtistDto): Artist {
+    const newArtist: Artist = {
       id: uuidv4(),
       name: dto.name,
-      grammy: dto.grammy || false,
+      grammy: dto.grammy,
     };
     memoryDB.artists.set(newArtist.id, newArtist);
     return newArtist;
   }
 
-  putArtist(id: string, dto: IUpdateArtistDto): IArtist {
+  putArtist(id: string, dto: UpdateArtistDto): Artist {
     if (!validate(id)) {
       throw new HttpException('Invalid ArtistID', HttpStatus.BAD_REQUEST);
     }

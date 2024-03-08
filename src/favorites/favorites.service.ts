@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { memoryDB } from '../database/memoryDB';
 import { validate } from 'uuid';
-import { IFavoritesResponse } from './schemas/favorites.interface';
+import { FavoritesResponse } from './favorites.model';
 
 @Injectable()
 export class FavoritesService {
-  getFavorites(): IFavoritesResponse {
+  getFavorites(): FavoritesResponse {
     const artists = [...memoryDB.favorites.artists].map((id) =>
       memoryDB.artists.get(id),
     );

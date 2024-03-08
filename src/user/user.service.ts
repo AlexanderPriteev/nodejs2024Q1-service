@@ -1,19 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { memoryDB } from '../database/memoryDB';
 import { validate, v4 as uuidv4 } from 'uuid';
-import {
-  ICreateUserDto,
-  IUpdatePasswordDto,
-  IUser,
-} from './schemas/user.interface';
+import { CreateUserDto, UpdatePasswordDto, User } from './user.model';
 
 @Injectable()
 export class UserService {
-  getUsers(): IUser[] {
+  getUsers(): User[] {
     return Array.from(memoryDB.users.values());
   }
 
-  getUser(id: string): IUser {
+  getUser(id: string): User {
     if (!validate(id)) {
       throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
     }
@@ -22,8 +18,8 @@ export class UserService {
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
-  postUser(dto: ICreateUserDto): IUser {
-    const newUser: IUser = {
+  postUser(dto: CreateUserDto): User {
+    const newUser: User = {
       id: uuidv4(),
       login: dto.login,
       version: 1,
@@ -35,7 +31,7 @@ export class UserService {
     return newUser;
   }
 
-  putUser(id: string, dto: IUpdatePasswordDto): IUser {
+  putUser(id: string, dto: UpdatePasswordDto): User {
     if (!validate(id)) {
       throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
     }
@@ -54,7 +50,7 @@ export class UserService {
       .reduce((res, key) => {
         res[key] = user[key];
         return res;
-      }, {} as IUser);
+      }, {} as User);
   }
 
   deleteUser(id: string): void {
