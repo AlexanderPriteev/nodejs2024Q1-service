@@ -1,72 +1,37 @@
 # Home Library Service
 
-## Prerequisites
+#### Steps to get started:
+1. Download or clone the repository (dev branch)
+2. Install dependencies with `npm i`
+3. Create `.env` file _(./.env)_ and set the value to `PORT=4000` _(or any other port you need)_
+4. Start the server `npm start`
 
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+---
 
-## Downloading
+#### Testing:
 
+Run the tests required for the current task [(REST Service)](https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/rest-service/assignment.md):
 ```
-git clone {repository URL}
-```
-
-## Installing NPM modules
-
-```
-npm install
+npm run test:service
 ```
 
-## Running application
-
-```
-npm start
-```
-
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Testing
-
-After application running open new terminal and enter:
-
-To run all tests without authorization
-
+Run all tests:
 ```
 npm run test
 ```
 
-To run only one of all test suites
+---
 
+#### Documentation:
+You can view the documentation in **Swagger** at route `/api/docs`. 
 ```
-npm run test -- <path to suite>
+ http://localhost:{PORT}/api/docs or http://127.0.0.1:{PORT}/api/docs
 ```
+_By default, it's `http://localhost:4000/api/docs` or `http://127.0.0.1:4000/api/docs`_  
 
-To run all test with authorization
+---
 
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
+### Format:
 ```
 npm run lint
 ```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
