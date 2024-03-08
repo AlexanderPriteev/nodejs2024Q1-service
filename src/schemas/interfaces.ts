@@ -44,6 +44,20 @@ export interface IUpdatePasswordDto {
   newPassword: string;
 }
 
+export interface ICreateTrackDto {
+  name: string;
+  artistId: string | null;
+  albumId: string | null;
+  duration: number;
+}
+
+export interface IUpdateTrackDto {
+  name?: string;
+  artistId?: string | null;
+  albumId?: string | null;
+  duration?: number;
+}
+
 export interface IFavoritesResponse {
   artists: IArtist[];
   albums: IAlbum[];
