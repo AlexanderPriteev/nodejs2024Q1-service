@@ -60,6 +60,7 @@ export class AlbumService {
           break;
         }
       }
+      memoryDB.favorites.albums.delete(id);
     } else {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }

@@ -26,8 +26,8 @@ export class TrackService {
     const newTrack: ITrack = {
       id: uuidv4(),
       name: dto.name,
-      artistId: dto.albumId || null,
-      albumId: dto.artistId || null,
+      artistId: dto.artistId || null,
+      albumId: dto.albumId || null,
       duration: dto.duration,
     };
     memoryDB.tracks.set(newTrack.id, newTrack);
@@ -56,6 +56,7 @@ export class TrackService {
     }
     if (memoryDB.tracks.has(id)) {
       memoryDB.tracks.delete(id);
+      memoryDB.favorites.tracks.delete(id);
     } else {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }

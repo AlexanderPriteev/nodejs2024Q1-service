@@ -17,8 +17,8 @@ export class ArtistService {
     if (!validate(id)) {
       throw new HttpException('Invalid ArtistID', HttpStatus.BAD_REQUEST);
     }
-    const Artist = memoryDB.artists.get(id);
-    if (Artist) return Artist;
+    const artist = memoryDB.artists.get(id);
+    if (artist) return artist;
     throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
   }
 
@@ -63,6 +63,7 @@ export class ArtistService {
           break;
         }
       }
+      memoryDB.favorites.artists.delete(id);
     } else {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
