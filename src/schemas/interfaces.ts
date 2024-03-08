@@ -62,6 +62,18 @@ export interface IAlbum {
   artistId: string | null;
 }
 
+export interface ICreateAlbumDto {
+  name: string;
+  year: number;
+  artistId: string | null;
+}
+
+export interface IUpdateAlbumDto {
+  name?: string;
+  year?: number;
+  artistId?: string | null;
+}
+
 export interface IFavorites {
   artists: string[];
   albums: string[];
