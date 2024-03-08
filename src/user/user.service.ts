@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { memoryDB } from '../database/memoryDB';
+import { validate, v4 as uuidv4 } from 'uuid';
 import {
   ICreateUserDto,
   IUpdatePasswordDto,
   IUser,
-} from '../schemas/interfaces';
-import { memoryDB } from '../database/memoryDB';
-import { validate, v4 as uuidv4 } from 'uuid';
+} from './schemas/user.interface';
 
 @Injectable()
 export class UserService {

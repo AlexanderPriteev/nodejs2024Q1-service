@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { memoryDB } from '../database/memoryDB';
+import { v4 as uuidv4, validate } from 'uuid';
 import {
   IAlbum,
   ICreateAlbumDto,
   IUpdateAlbumDto,
-} from '../schemas/interfaces';
-import { memoryDB } from '../database/memoryDB';
-import { v4 as uuidv4, validate } from 'uuid';
+} from './schemas/album.interface';
 
 @Injectable()
 export class AlbumService {

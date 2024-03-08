@@ -10,8 +10,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { IUser } from '../schemas/interfaces';
-import { MCreateUserDto, MUpdatePasswordDto } from './user.model';
+import { MCreateUserDto, MUpdatePasswordDto } from './schemas/user.model';
+import { IUser } from './schemas/user.interface';
 
 @Controller('user')
 export class UserController {

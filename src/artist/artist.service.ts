@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {
-  ICreateArtistDto,
-  IArtist,
-  IUpdateArtistDto,
-} from '../schemas/interfaces';
 import { memoryDB } from '../database/memoryDB';
 import { v4 as uuidv4, validate } from 'uuid';
+import {
+  IArtist,
+  ICreateArtistDto,
+  IUpdateArtistDto,
+} from './schemas/artist.interface';
 
 @Injectable()
 export class ArtistService {

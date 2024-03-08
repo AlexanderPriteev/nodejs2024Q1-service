@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IFavoritesResponse } from '../schemas/interfaces';
 import { memoryDB } from '../database/memoryDB';
 import { validate } from 'uuid';
+import { IFavoritesResponse } from './schemas/favorites.interface';
 
 @Injectable()
 export class FavoritesService {

@@ -9,9 +9,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { IArtist } from '../schemas/interfaces';
 import { ArtistService } from './artist.service';
-import { MCreateArtistDto, MUpdateArtistDto } from './artist.model';
+import { MCreateArtistDto, MUpdateArtistDto } from './schemas/artist.model';
+import { IArtist } from './schemas/artist.interface';
 
 @Controller('artist')
 export class ArtistController {

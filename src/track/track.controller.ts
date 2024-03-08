@@ -9,9 +9,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ITrack } from '../schemas/interfaces';
 import { TrackService } from './track.service';
-import { MCreateTrackDto, MUpdateTrackDto } from './track.model';
+import { MCreateTrackDto, MUpdateTrackDto } from './schemas/track.model';
+import { ITrack } from './schemas/track.interface';
 
 @Controller('track')
 export class TrackController {

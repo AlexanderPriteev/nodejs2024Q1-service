@@ -9,9 +9,10 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { IAlbum } from '../schemas/interfaces';
+
 import { AlbumService } from './album.service';
-import { MCreateAlbumDto, MUpdateAlbumDto } from './album.model';
+import { MCreateAlbumDto, MUpdateAlbumDto } from './schemas/album.model';
+import { IAlbum } from './schemas/album.interface';
 
 @Controller('album')
 export class AlbumController {

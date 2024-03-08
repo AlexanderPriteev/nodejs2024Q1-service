@@ -1,4 +1,8 @@
-import { IAlbum, IArtist, IDB, ITrack, IUser } from '../schemas/interfaces';
+import { IDB } from './schemas/interfaces';
+import { IUser } from '../user/schemas/user.interface';
+import { IArtist } from '../artist/schemas/artist.interface';
+import { IAlbum } from '../album/schemas/album.interface';
+import { ITrack } from '../track/schemas/track.interface';
 
 export const memoryDB: IDB = {
   users: new Map<string, IUser>(),

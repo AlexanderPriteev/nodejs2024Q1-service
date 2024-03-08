@@ -7,8 +7,8 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { IFavoritesResponse } from '../schemas/interfaces';
 import { FavoritesService } from './favorites.service';
+import { IFavoritesResponse } from './schemas/favorites.interface';
 
 @Controller('favs')
 export class FavoritesController {

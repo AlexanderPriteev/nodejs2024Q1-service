@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
+import { memoryDB } from '../database/memoryDB';
+import { v4 as uuidv4, validate } from 'uuid';
 import {
   ICreateTrackDto,
   ITrack,
   IUpdateTrackDto,
-} from '../schemas/interfaces';
-import { memoryDB } from '../database/memoryDB';
-import { v4 as uuidv4, validate } from 'uuid';
+} from './schemas/track.interface';
 
 @Injectable()
 export class TrackService {
