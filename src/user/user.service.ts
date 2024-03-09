@@ -2,23 +2,29 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { memoryDB } from '../database/memoryDB';
 import { validate, v4 as uuidv4 } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto, User } from './user.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  getUsers(): User[] {
-    return Array.from(memoryDB.users.values());
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
+
+  async getUsers(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 
-  getUser(id: string): User {
+  async getUser(id: string): Promise<User> {
     if (!validate(id)) {
       throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
     }
-    const user = memoryDB.users.get(id);
+    const user = await this.userRepository.findOneBy({ id });
     if (user) return user;
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
-  postUser(dto: CreateUserDto): User {
+  async postUser(dto: CreateUserDto): Promise<User> {
     const newUser: User = {
       id: uuidv4(),
       login: dto.login,
@@ -27,15 +33,15 @@ export class UserService {
       updatedAt: new Date().getTime(),
     };
     const userDB = { ...newUser, password: dto.password };
-    memoryDB.users.set(newUser.id, userDB);
+    await this.userRepository.save(userDB);
     return newUser;
   }
 
-  putUser(id: string, dto: UpdatePasswordDto): User {
+  async putUser(id: string, dto: UpdatePasswordDto): Promise<User> {
     if (!validate(id)) {
       throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
     }
-    const user = memoryDB.users.get(id);
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -44,7 +50,9 @@ export class UserService {
     }
     user.password = dto.newPassword;
     user.version += 1;
+    user.createdAt = Number(user.createdAt);
     user.updatedAt = new Date().getTime();
+    await this.userRepository.update({ id }, user);
     return Object.keys(user)
       .filter((key) => key !== 'password')
       .reduce((res, key) => {
@@ -53,12 +61,13 @@ export class UserService {
       }, {} as User);
   }
 
-  deleteUser(id: string): void {
+  async deleteUser(id: string): Promise<void> {
     if (!validate(id)) {
       throw new HttpException('Invalid ID', HttpStatus.BAD_REQUEST);
     }
-    if (memoryDB.users.has(id)) {
-      memoryDB.users.delete(id);
+    const user = await this.userRepository.findOneBy({ id });
+    if (user) {
+      await this.userRepository.delete({ id });
     } else {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }

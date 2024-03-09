@@ -1,7 +1,10 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class User {
+  @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     type: String,
     format: 'uuid',
@@ -10,9 +13,11 @@ export class User {
   @IsString()
   id: string;
 
+  @Column('text')
   @IsString()
   password?: string;
 
+  @Column('text')
   @ApiProperty({
     type: String,
     example: 'TestUser',
@@ -21,6 +26,7 @@ export class User {
   @IsString()
   login: string;
 
+  @Column('int')
   @ApiProperty({
     type: Number,
     example: '1',
@@ -28,6 +34,7 @@ export class User {
   @IsNumber()
   version: number;
 
+  @Column('bigint')
   @ApiProperty({
     type: Number,
     example: '1655000000',
@@ -35,6 +42,7 @@ export class User {
   @IsNumber()
   createdAt: number;
 
+  @Column('bigint')
   @ApiProperty({
     type: Number,
     example: '1655000000',
@@ -50,7 +58,7 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsString()
-  login: string;
+  readonly login: string;
 
   @ApiProperty({
     type: String,
@@ -58,7 +66,7 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsString()
-  password: string;
+  readonly password: string;
 }
 
 export class UpdatePasswordDto {
@@ -68,7 +76,7 @@ export class UpdatePasswordDto {
   })
   @IsNotEmpty()
   @IsString()
-  oldPassword: string;
+  readonly oldPassword: string;
 
   @ApiProperty({
     type: String,
@@ -76,5 +84,5 @@ export class UpdatePasswordDto {
   })
   @IsNotEmpty()
   @IsString()
-  newPassword: string;
+  readonly newPassword: string;
 }

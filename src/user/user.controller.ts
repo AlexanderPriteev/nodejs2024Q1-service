@@ -21,7 +21,7 @@ export class UserController {
 
   @Get()
   @ApiResponse({ status: 200, type: [User] })
-  getUsers(): User[] {
+  getUsers(): Promise<User[]> {
     return this.userService.getUsers();
   }
 
@@ -29,14 +29,14 @@ export class UserController {
   @ApiResponse({ status: 200, type: User })
   @ApiResponse({ status: 400, description: 'userId is invalid' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  getUser(@Param('id') id: string): User {
+  getUser(@Param('id') id: string): Promise<User> {
     return this.userService.getUser(id);
   }
 
   @Post()
   @ApiResponse({ status: 201, type: User })
   @ApiResponse({ status: 400, description: 'Does not contain required fields' })
-  postUser(@Body() dto: CreateUserDto): User {
+  postUser(@Body() dto: CreateUserDto): Promise<User> {
     return this.userService.postUser(dto);
   }
 
@@ -45,7 +45,10 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'userId is invalid' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 403, description: 'oldPassword is wrong' })
-  putUser(@Param('id') id: string, @Body() dto: UpdatePasswordDto): User {
+  putUser(
+    @Param('id') id: string,
+    @Body() dto: UpdatePasswordDto,
+  ): Promise<User> {
     return this.userService.putUser(id, dto);
   }
 
