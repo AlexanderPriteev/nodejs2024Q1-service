@@ -3,15 +3,12 @@ import { v4 as uuidv4, validate } from 'uuid';
 import { CreateTrackDto, Track, UpdateTrackDto } from './track.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Favorite } from '../favorites/favorites.model';
 
 @Injectable()
 export class TrackService {
   constructor(
     @InjectRepository(Track)
     private readonly trackRepository: Repository<Track>,
-    @InjectRepository(Favorite)
-    private readonly favoriteRepository: Repository<Favorite>,
   ) {}
 
   async getTracks(): Promise<Track[]> {
@@ -62,7 +59,6 @@ export class TrackService {
     const track = await this.trackRepository.findOneBy({ id });
     if (track) {
       await this.trackRepository.delete({ id });
-      await this.favoriteRepository.delete({ id });
     } else {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }

@@ -5,10 +5,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Artist } from '../artist/artist.model';
 import { Album } from '../album/album.model';
 import { Track } from '../track/track.model';
-import { Favorite } from './favorites.model';
+import {
+  FavoriteAlbum,
+  FavoriteArtist,
+  FavoriteTrack,
+} from './favorites.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Favorite, Artist, Album, Track])],
+  imports: [
+    TypeOrmModule.forFeature([
+      FavoriteArtist,
+      FavoriteAlbum,
+      FavoriteTrack,
+      Artist,
+      Album,
+      Track,
+    ]),
+  ],
   controllers: [FavoritesController],
   providers: [FavoritesService],
 })

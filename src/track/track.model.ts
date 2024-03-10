@@ -1,6 +1,14 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Artist } from '../artist/artist.model';
+import { Album } from '../album/album.model';
 
 @Entity()
 export class Track {
@@ -49,6 +57,14 @@ export class Track {
   })
   @IsNumber()
   duration: number;
+
+  @ManyToOne(() => Artist, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'artistId' })
+  artist?: Artist;
+
+  @ManyToOne(() => Album, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'albumId' })
+  album?: Album;
 }
 
 export class CreateTrackDto {

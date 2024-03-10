@@ -3,18 +3,12 @@ import { v4 as uuidv4, validate } from 'uuid';
 import { Album, CreateAlbumDto, UpdateAlbumDto } from './album.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Track } from '../track/track.model';
-import { Favorite } from '../favorites/favorites.model';
 
 @Injectable()
 export class AlbumService {
   constructor(
     @InjectRepository(Album)
     private readonly albumRepository: Repository<Album>,
-    @InjectRepository(Track)
-    private readonly trackRepository: Repository<Track>,
-    @InjectRepository(Favorite)
-    private readonly favoriteRepository: Repository<Favorite>,
   ) {}
 
   async getAlbums(): Promise<Album[]> {
@@ -60,16 +54,9 @@ export class AlbumService {
       throw new HttpException('Invalid AlbumID', HttpStatus.BAD_REQUEST);
     }
     const album = await this.albumRepository.findOneBy({ id });
-    if (album) {
-      await this.albumRepository.delete({ id });
-      const tracks = await this.trackRepository.findBy({ albumId: id });
-      for (const track of tracks) {
-        track.albumId = null;
-        await this.trackRepository.update({ id: track.id }, track);
-      }
-      await this.favoriteRepository.delete({ id });
-    } else {
+    if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
+    await this.albumRepository.delete({ id });
   }
 }

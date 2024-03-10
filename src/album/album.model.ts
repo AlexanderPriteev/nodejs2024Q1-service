@@ -1,6 +1,13 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Artist } from '../artist/artist.model';
 
 @Entity()
 export class Album {
@@ -37,6 +44,10 @@ export class Album {
     example: 'b9e073d9-e98c-4816-b20e-59280d933aa4',
   })
   artistId: string | null;
+
+  @ManyToOne(() => Artist, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'artistId' })
+  artist?: Artist;
 }
 
 export class CreateAlbumDto {
