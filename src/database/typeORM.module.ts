@@ -6,6 +6,7 @@ import { User } from '../user/user.model';
 import { Track } from '../track/track.model';
 import { Album } from '../album/album.model';
 import { Artist } from '../artist/artist.model';
+import { Favorite } from '../favorites/favorites.model';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { Artist } from '../artist/artist.model';
       database: env.DB_NAME,
       username: env.DB_USERNAME,
       password: env.DB_PASSWORD,
-      entities: [User, Track, Album, Artist],
+      entities: [User, Track, Album, Artist, Favorite],
       synchronize: true,
       logging: true,
     }),

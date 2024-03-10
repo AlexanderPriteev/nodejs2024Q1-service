@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Album } from '../album/album.model';
 import { Repository } from 'typeorm';
 import { Track } from '../track/track.model';
+import { Favorite } from '../favorites/favorites.model';
 
 @Injectable()
 export class ArtistService {
@@ -15,6 +16,8 @@ export class ArtistService {
     private readonly albumRepository: Repository<Album>,
     @InjectRepository(Track)
     private readonly trackRepository: Repository<Track>,
+    @InjectRepository(Favorite)
+    private readonly favoriteRepository: Repository<Favorite>,
   ) {}
   async getArtists(): Promise<Artist[]> {
     return await this.artistRepository.find();
@@ -70,9 +73,7 @@ export class ArtistService {
         track.artistId = null;
         await this.trackRepository.update({ id: track.id }, track);
       }
-
-      //TODO: needFix
-      // memoryDB.favorites.artists.delete(id);
+      await this.favoriteRepository.delete({ id });
     } else {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }

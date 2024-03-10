@@ -20,7 +20,7 @@ export class FavoritesController {
 
   @Get()
   @ApiResponse({ status: 200, type: FavoritesResponse })
-  getUsers(): FavoritesResponse {
+  getUsers(): Promise<FavoritesResponse> {
     return this.favoritesService.getFavorites();
   }
 

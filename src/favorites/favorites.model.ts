@@ -2,6 +2,21 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Artist } from '../artist/artist.model';
 import { Album } from '../album/album.model';
 import { Track } from '../track/track.model';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsString } from 'class-validator';
+
+type TFavorite = 'artist' | 'album' | 'track';
+
+@Entity()
+export class Favorite {
+  @PrimaryGeneratedColumn('uuid')
+  @IsString()
+  id: string;
+
+  @Column('text')
+  @IsString()
+  type: TFavorite;
+}
 
 export class FavoritesResponse {
   @ApiProperty({
