@@ -33,7 +33,7 @@ import {
         FavoriteAlbum,
         FavoriteTrack,
       ],
-      synchronize: true,
+      synchronize: false,
       logging: true,
     }),
   ],
