@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { memoryDB } from '../database/memoryDB';
 import { validate, v4 as uuidv4 } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto, User } from './user.model';
 import { InjectRepository } from '@nestjs/typeorm';

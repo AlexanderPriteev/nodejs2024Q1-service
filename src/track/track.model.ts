@@ -1,7 +1,10 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Track {
+  @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     type: String,
     format: 'uuid',
@@ -10,6 +13,7 @@ export class Track {
   @IsString()
   id: string;
 
+  @Column('text')
   @ApiProperty({
     type: String,
     example: 'The Show Must Go On',
@@ -17,6 +21,7 @@ export class Track {
   @IsString()
   name: string;
 
+  @Column('uuid', { nullable: true })
   @ApiProperty({
     type: String,
     format: 'uuid',
@@ -26,6 +31,7 @@ export class Track {
   @IsString()
   artistId: string | null;
 
+  @Column('uuid', { nullable: true })
   @ApiProperty({
     type: String,
     format: 'uuid',
@@ -35,6 +41,7 @@ export class Track {
   @IsString()
   albumId: string | null;
 
+  @Column('int')
   @ApiProperty({
     type: Number,
     description: 'In seconds',
@@ -51,7 +58,7 @@ export class CreateTrackDto {
   })
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @ApiProperty({
     type: String,
@@ -61,7 +68,7 @@ export class CreateTrackDto {
   })
   @IsOptional()
   @IsString()
-  artistId: string | null;
+  readonly artistId: string | null;
 
   @ApiProperty({
     type: String,
@@ -71,7 +78,7 @@ export class CreateTrackDto {
   })
   @IsOptional()
   @IsString()
-  albumId: string | null;
+  readonly albumId: string | null;
 
   @ApiProperty({
     type: Number,
@@ -79,7 +86,7 @@ export class CreateTrackDto {
     example: 262,
   })
   @IsNumber()
-  duration: number;
+  readonly duration: number;
 }
 
 export class UpdateTrackDto {
@@ -89,7 +96,7 @@ export class UpdateTrackDto {
   })
   @IsOptional()
   @IsString()
-  name?: string;
+  readonly name?: string;
 
   @ApiProperty({
     type: String,
@@ -99,7 +106,7 @@ export class UpdateTrackDto {
   })
   @IsOptional()
   @IsString()
-  artistId?: string | null;
+  readonly artistId?: string | null;
 
   @ApiProperty({
     type: String,
@@ -109,7 +116,7 @@ export class UpdateTrackDto {
   })
   @IsOptional()
   @IsString()
-  albumId?: string | null;
+  readonly albumId?: string | null;
 
   @ApiProperty({
     type: Number,
@@ -118,5 +125,5 @@ export class UpdateTrackDto {
   })
   @IsOptional()
   @IsNumber()
-  duration?: number;
+  readonly duration?: number;
 }

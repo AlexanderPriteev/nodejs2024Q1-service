@@ -20,7 +20,7 @@ export class TrackController {
 
   @Get()
   @ApiResponse({ status: 200, type: [Track] })
-  getUsers(): Track[] {
+  getUsers(): Promise<Track[]> {
     return this.trackService.getTracks();
   }
 
@@ -28,14 +28,14 @@ export class TrackController {
   @ApiResponse({ status: 200, type: Track })
   @ApiResponse({ status: 400, description: 'trackId is invalid' })
   @ApiResponse({ status: 404, description: 'Track not found' })
-  getUser(@Param('id') id: string): Track {
+  getUser(@Param('id') id: string): Promise<Track> {
     return this.trackService.getTrack(id);
   }
 
   @Post()
   @ApiResponse({ status: 201, type: Track })
   @ApiResponse({ status: 400, description: 'Does not contain required fields' })
-  postUser(@Body() dto: CreateTrackDto): Track {
+  postUser(@Body() dto: CreateTrackDto): Promise<Track> {
     return this.trackService.postTrack(dto);
   }
 
@@ -43,7 +43,10 @@ export class TrackController {
   @ApiResponse({ status: 200, type: Track })
   @ApiResponse({ status: 400, description: 'trackId is invalid' })
   @ApiResponse({ status: 404, description: 'Track not found' })
-  putUser(@Param('id') id: string, @Body() dto: UpdateTrackDto): Track {
+  putUser(
+    @Param('id') id: string,
+    @Body() dto: UpdateTrackDto,
+  ): Promise<Track> {
     return this.trackService.putTrack(id, dto);
   }
 

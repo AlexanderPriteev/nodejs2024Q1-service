@@ -1,25 +1,30 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-
-import { memoryDB } from '../database/memoryDB';
 import { v4 as uuidv4, validate } from 'uuid';
 import { CreateTrackDto, Track, UpdateTrackDto } from './track.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TrackService {
-  getTracks(): Track[] {
-    return Array.from(memoryDB.tracks.values());
+  constructor(
+    @InjectRepository(Track)
+    private readonly trackRepository: Repository<Track>,
+  ) {}
+
+  async getTracks(): Promise<Track[]> {
+    return await this.trackRepository.find();
   }
 
-  getTrack(id: string): Track {
+  async getTrack(id: string): Promise<Track> {
     if (!validate(id)) {
       throw new HttpException('Invalid trackID', HttpStatus.BAD_REQUEST);
     }
-    const track = memoryDB.tracks.get(id);
+    const track = await this.trackRepository.findOneBy({ id });
     if (track) return track;
     throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
   }
 
-  postTrack(dto: CreateTrackDto): Track {
+  async postTrack(dto: CreateTrackDto): Promise<Track> {
     const newTrack: Track = {
       id: uuidv4(),
       name: dto.name,
@@ -27,15 +32,14 @@ export class TrackService {
       albumId: dto.albumId || null,
       duration: dto.duration,
     };
-    memoryDB.tracks.set(newTrack.id, newTrack);
-    return newTrack;
+    return await this.trackRepository.save(newTrack);
   }
 
-  putTrack(id: string, dto: UpdateTrackDto): Track {
+  async putTrack(id: string, dto: UpdateTrackDto): Promise<Track> {
     if (!validate(id)) {
       throw new HttpException('Invalid trackID', HttpStatus.BAD_REQUEST);
     }
-    const track = memoryDB.tracks.get(id);
+    const track = await this.trackRepository.findOneBy({ id });
     if (!track) {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
@@ -44,16 +48,20 @@ export class TrackService {
     if (dto.albumId) track.albumId = dto.albumId;
     if (dto.duration || dto.duration === 0) track.duration = dto.duration;
 
+    await this.trackRepository.update({ id }, track);
     return track;
   }
 
-  deleteTrack(id: string): void {
+  async deleteTrack(id: string): Promise<void> {
     if (!validate(id)) {
       throw new HttpException('Invalid trackID', HttpStatus.BAD_REQUEST);
     }
-    if (memoryDB.tracks.has(id)) {
-      memoryDB.tracks.delete(id);
-      memoryDB.favorites.tracks.delete(id);
+    const track = await this.trackRepository.findOneBy({ id });
+    if (track) {
+      await this.trackRepository.delete({ id });
+
+      //TODO: needFix
+      // memoryDB.favorites.tracks.delete(id);
     } else {
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     }
