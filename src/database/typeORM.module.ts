@@ -4,6 +4,7 @@ import { env } from 'node:process';
 import { ConfigModule } from '@nestjs/config';
 import { User } from '../user/user.model';
 import { Track } from '../track/track.model';
+import { Album } from '../album/album.model';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { Track } from '../track/track.model';
       database: env.DB_NAME,
       username: env.DB_USERNAME,
       password: env.DB_PASSWORD,
-      entities: [User, Track],
+      entities: [User, Track, Album],
       synchronize: true,
       logging: true,
     }),

@@ -21,7 +21,7 @@ export class AlbumController {
 
   @Get()
   @ApiResponse({ status: 200, type: [Album] })
-  getUsers(): Album[] {
+  getUsers(): Promise<Album[]> {
     return this.albumService.getAlbums();
   }
 
@@ -29,14 +29,14 @@ export class AlbumController {
   @ApiResponse({ status: 200, type: Album })
   @ApiResponse({ status: 400, description: 'albumId is invalid' })
   @ApiResponse({ status: 404, description: 'Album not found' })
-  getUser(@Param('id') id: string): Album {
+  getUser(@Param('id') id: string): Promise<Album> {
     return this.albumService.getAlbum(id);
   }
 
   @Post()
   @ApiResponse({ status: 201, type: Album })
   @ApiResponse({ status: 400, description: 'Does not contain required fields' })
-  postUser(@Body() dto: CreateAlbumDto): Album {
+  postUser(@Body() dto: CreateAlbumDto): Promise<Album> {
     return this.albumService.postAlbum(dto);
   }
 
@@ -44,7 +44,10 @@ export class AlbumController {
   @ApiResponse({ status: 200, type: Album })
   @ApiResponse({ status: 400, description: 'albumId is invalid' })
   @ApiResponse({ status: 404, description: 'Album not found' })
-  putUser(@Param('id') id: string, @Body() dto: UpdateAlbumDto): Album {
+  putUser(
+    @Param('id') id: string,
+    @Body() dto: UpdateAlbumDto,
+  ): Promise<Album> {
     return this.albumService.putAlbum(id, dto);
   }
 

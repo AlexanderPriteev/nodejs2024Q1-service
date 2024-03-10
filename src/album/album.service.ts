@@ -1,62 +1,72 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { memoryDB } from '../database/memoryDB';
 import { v4 as uuidv4, validate } from 'uuid';
 import { Album, CreateAlbumDto, UpdateAlbumDto } from './album.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Track } from '../track/track.model';
 
 @Injectable()
 export class AlbumService {
-  getAlbums(): Album[] {
-    return Array.from(memoryDB.albums.values());
+  constructor(
+    @InjectRepository(Album)
+    private readonly albumRepository: Repository<Album>,
+    @InjectRepository(Track)
+    private readonly trackRepository: Repository<Track>,
+  ) {}
+
+  async getAlbums(): Promise<Album[]> {
+    return await this.albumRepository.find();
   }
 
-  getAlbum(id: string): Album {
+  async getAlbum(id: string): Promise<Album> {
     if (!validate(id)) {
       throw new HttpException('Invalid AlbumID', HttpStatus.BAD_REQUEST);
     }
-    const Album = memoryDB.albums.get(id);
-    if (Album) return Album;
+    const album = await this.albumRepository.findOneBy({ id });
+    if (album) return album;
     throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
   }
 
-  postAlbum(dto: CreateAlbumDto): Album {
+  async postAlbum(dto: CreateAlbumDto): Promise<Album> {
     const newAlbum: Album = {
       id: uuidv4(),
       name: dto.name,
       year: dto.year,
       artistId: dto.artistId || null,
     };
-    memoryDB.albums.set(newAlbum.id, newAlbum);
-    return newAlbum;
+    return await this.albumRepository.save(newAlbum);
   }
 
-  putAlbum(id: string, dto: UpdateAlbumDto): Album {
+  async putAlbum(id: string, dto: UpdateAlbumDto): Promise<Album> {
     if (!validate(id)) {
       throw new HttpException('Invalid AlbumID', HttpStatus.BAD_REQUEST);
     }
-    const album = memoryDB.albums.get(id);
+    const album = await this.albumRepository.findOneBy({ id });
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
     if (dto.name) album.name = dto.name;
     if (dto.year) album.year = dto.year;
     if (dto.artistId) album.artistId = dto.artistId;
-
+    await this.albumRepository.update({ id }, album);
     return album;
   }
 
-  deleteAlbum(id: string): void {
+  async deleteAlbum(id: string): Promise<void> {
     if (!validate(id)) {
       throw new HttpException('Invalid AlbumID', HttpStatus.BAD_REQUEST);
     }
-    if (memoryDB.albums.has(id)) {
-      memoryDB.albums.delete(id);
-      for (const obj of memoryDB.tracks.values()) {
-        if (obj.albumId === id) {
-          obj.albumId = null;
-          break;
-        }
+    const album = await this.albumRepository.findOneBy({ id });
+    if (album) {
+      await this.albumRepository.delete({ id });
+      const tracks = await this.trackRepository.findBy({ albumId: id });
+      for (const track of tracks) {
+        track.albumId = null;
+        await this.trackRepository.update({ id: track.id }, track);
       }
-      memoryDB.favorites.albums.delete(id);
+
+      //TODO: needFix
+      // memoryDB.favorites.albums.delete(id);
     } else {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }

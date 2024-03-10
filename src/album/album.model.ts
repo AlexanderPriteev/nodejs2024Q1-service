@@ -1,7 +1,10 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Album {
+  @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     type: String,
     format: 'uuid',
@@ -10,6 +13,7 @@ export class Album {
   @IsString()
   id: string;
 
+  @Column('text')
   @ApiProperty({
     type: String,
     example: 'Innuendo',
@@ -17,6 +21,7 @@ export class Album {
   @IsString()
   name: string;
 
+  @Column('int')
   @ApiProperty({
     type: String,
     example: 1991,
@@ -24,6 +29,7 @@ export class Album {
   @IsNumber()
   year: number;
 
+  @Column('uuid', { nullable: true })
   @ApiProperty({
     type: String,
     format: 'uuid',
@@ -40,14 +46,14 @@ export class CreateAlbumDto {
   })
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @ApiProperty({
     type: String,
     example: 1991,
   })
   @IsNumber()
-  year: number;
+  readonly year: number;
 
   @ApiProperty({
     type: String,
@@ -57,7 +63,7 @@ export class CreateAlbumDto {
   })
   @IsOptional()
   @IsString()
-  artistId: string | null;
+  readonly artistId: string | null;
 }
 
 export class UpdateAlbumDto {
@@ -67,7 +73,7 @@ export class UpdateAlbumDto {
   })
   @IsOptional()
   @IsString()
-  name?: string;
+  readonly name?: string;
 
   @ApiProperty({
     type: String,
@@ -75,7 +81,7 @@ export class UpdateAlbumDto {
   })
   @IsOptional()
   @IsNumber()
-  year?: number;
+  readonly year?: number;
 
   @ApiProperty({
     type: String,
@@ -85,5 +91,5 @@ export class UpdateAlbumDto {
   })
   @IsOptional()
   @IsString()
-  artistId?: string | null;
+  readonly artistId?: string | null;
 }
