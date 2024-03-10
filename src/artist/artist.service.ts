@@ -1,65 +1,78 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { memoryDB } from '../database/memoryDB';
 import { v4 as uuidv4, validate } from 'uuid';
 import { Artist, CreateArtistDto, UpdateArtistDto } from './artist.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Album } from '../album/album.model';
+import { Repository } from 'typeorm';
+import { Track } from '../track/track.model';
 
 @Injectable()
 export class ArtistService {
-  getArtists(): Artist[] {
-    return Array.from(memoryDB.artists.values());
+  constructor(
+    @InjectRepository(Artist)
+    private readonly artistRepository: Repository<Artist>,
+    @InjectRepository(Album)
+    private readonly albumRepository: Repository<Album>,
+    @InjectRepository(Track)
+    private readonly trackRepository: Repository<Track>,
+  ) {}
+  async getArtists(): Promise<Artist[]> {
+    return await this.artistRepository.find();
   }
 
-  getArtist(id: string): Artist {
+  async getArtist(id: string): Promise<Artist> {
     if (!validate(id)) {
       throw new HttpException('Invalid ArtistID', HttpStatus.BAD_REQUEST);
     }
-    const artist = memoryDB.artists.get(id);
+    const artist = await this.artistRepository.findOneBy({ id });
     if (artist) return artist;
     throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
   }
 
-  postArtist(dto: CreateArtistDto): Artist {
+  async postArtist(dto: CreateArtistDto): Promise<Artist> {
     const newArtist: Artist = {
       id: uuidv4(),
       name: dto.name,
       grammy: dto.grammy,
     };
-    memoryDB.artists.set(newArtist.id, newArtist);
-    return newArtist;
+    return await this.artistRepository.save(newArtist);
   }
 
-  putArtist(id: string, dto: UpdateArtistDto): Artist {
+  async putArtist(id: string, dto: UpdateArtistDto): Promise<Artist> {
     if (!validate(id)) {
       throw new HttpException('Invalid ArtistID', HttpStatus.BAD_REQUEST);
     }
-    const artist = memoryDB.artists.get(id);
+    const artist = await this.artistRepository.findOneBy({ id });
     if (!artist) {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
     if (dto.name) artist.name = dto.name;
     if (dto.grammy || dto.grammy === false) artist.grammy = dto.grammy;
+    await this.artistRepository.update({ id }, artist);
     return artist;
   }
 
-  deleteArtist(id: string): void {
+  async deleteArtist(id: string): Promise<void> {
     if (!validate(id)) {
       throw new HttpException('Invalid ArtistID', HttpStatus.BAD_REQUEST);
     }
-    if (memoryDB.artists.has(id)) {
-      memoryDB.artists.delete(id);
-      for (const obj of memoryDB.tracks.values()) {
-        if (obj.artistId === id) {
-          obj.artistId = null;
-          break;
-        }
+    const artist = await this.artistRepository.findOneBy({ id });
+    if (artist) {
+      await this.artistRepository.delete({ id });
+      const albums = await this.albumRepository.findBy({ artistId: id });
+      for (const album of albums) {
+        album.artistId = null;
+        await this.albumRepository.update({ id: album.id }, album);
       }
-      for (const obj of memoryDB.albums.values()) {
-        if (obj.artistId === id) {
-          obj.artistId = null;
-          break;
-        }
+
+      const tracks = await this.trackRepository.findBy({ artistId: id });
+      for (const track of tracks) {
+        track.artistId = null;
+        await this.trackRepository.update({ id: track.id }, track);
       }
-      memoryDB.favorites.artists.delete(id);
+
+      //TODO: needFix
+      // memoryDB.favorites.artists.delete(id);
     } else {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }

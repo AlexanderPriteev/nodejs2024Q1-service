@@ -20,7 +20,7 @@ export class ArtistController {
 
   @Get()
   @ApiResponse({ status: 200, type: [Artist] })
-  getUsers(): Artist[] {
+  getUsers(): Promise<Artist[]> {
     return this.artistService.getArtists();
   }
 
@@ -28,14 +28,14 @@ export class ArtistController {
   @ApiResponse({ status: 200, type: Artist })
   @ApiResponse({ status: 400, description: 'artistId is invalid' })
   @ApiResponse({ status: 404, description: 'Artist not found' })
-  getUser(@Param('id') id: string): Artist {
+  getUser(@Param('id') id: string): Promise<Artist> {
     return this.artistService.getArtist(id);
   }
 
   @Post()
   @ApiResponse({ status: 201, type: Artist })
   @ApiResponse({ status: 400, description: 'Does not contain required fields' })
-  postUser(@Body() dto: CreateArtistDto): Artist {
+  postUser(@Body() dto: CreateArtistDto): Promise<Artist> {
     return this.artistService.postArtist(dto);
   }
 
@@ -43,7 +43,10 @@ export class ArtistController {
   @ApiResponse({ status: 200, type: Artist })
   @ApiResponse({ status: 400, description: 'artistId is invalid' })
   @ApiResponse({ status: 404, description: 'Artist not found' })
-  putUser(@Param('id') id: string, @Body() dto: UpdateArtistDto): Artist {
+  putUser(
+    @Param('id') id: string,
+    @Body() dto: UpdateArtistDto,
+  ): Promise<Artist> {
     return this.artistService.putArtist(id, dto);
   }
 

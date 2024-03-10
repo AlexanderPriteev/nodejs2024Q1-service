@@ -1,7 +1,10 @@
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Artist {
+  @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     type: String,
     format: 'uuid',
@@ -10,6 +13,7 @@ export class Artist {
   @IsString()
   id: string;
 
+  @Column('text')
   @ApiProperty({
     type: String,
     example: 'Freddie Mercury',
@@ -17,6 +21,7 @@ export class Artist {
   @IsString()
   name: string;
 
+  @Column('boolean')
   @ApiProperty({
     type: Boolean,
     example: false,
