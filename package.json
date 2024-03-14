@@ -24,7 +24,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 
     "migration:generate": "npm run build && typeorm migration:generate -d dist/database/datasource.js src/database/migrations/migration",
-    "migration:run": "npm run build && typeorm -d dist/database/datasource.js migration:run"
+    "migration:run": "npm run build && typeorm -d dist/database/datasource.js migration:run",
+    "migration:update": "typeorm -d dist/database/datasource.js migration:run",
+    "start:docker:dev": "npm run migration:update && npm start"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.3",
