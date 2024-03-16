@@ -11,6 +11,12 @@ import {
   FavoriteArtist,
   FavoriteTrack,
 } from '../favorites/favorites.model';
+import 'dotenv/config';
+
+const HOST =
+  process.env.NODE_ENV === 'docker'
+    ? process.env.DB_HOST_DOCKER
+    : process.env.DB_HOST;
 
 @Module({
   imports: [
@@ -19,7 +25,7 @@ import {
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: env.DB_HOST,
+      host: HOST,
       port: Number(env.DB_PORT),
       database: env.DB_NAME,
       username: env.DB_USERNAME,
