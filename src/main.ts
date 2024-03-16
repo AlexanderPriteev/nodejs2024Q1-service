@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { env } from 'node:process';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import 'dotenv/config';
 
 const PORT = env.PORT || 4000;
 

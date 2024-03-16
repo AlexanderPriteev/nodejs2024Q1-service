@@ -1,17 +1,20 @@
-FROM node:20-alpine3.18
+FROM node:20-alpine3.18 As development
 
 WORKDIR /app
 
+COPY package*.json ./
+
+RUN npm ci
 COPY . .
-RUN npm install && npm run build
+RUN npm run build
 
+ENV NODE_ENV production
+RUN npm ci --only=production && npm cache clean --force
 
-FROM node:20-alpine3.18
-
+FROM node:20-alpine3.18 As production
 WORKDIR /app
 
-COPY --from=0 /app/dist ./
-COPY . .
+COPY --from=development /app/dist ./dist
+COPY --from=development /app/node_modules ./node_modules
 
-
-CMD ["npm"]
+CMD ["npm", "run", "start:docker:prod"]

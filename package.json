@@ -25,8 +25,9 @@
 
     "migration:generate": "npm run build && typeorm migration:generate -d dist/database/datasource.js src/database/migrations/migration",
     "migration:run": "npm run build && typeorm -d dist/database/datasource.js migration:run",
-    "migration:update": "typeorm -d dist/database/datasource.js migration:run",
-    "start:docker:dev": "npm run migration:update && npm start"
+    "migration:update": "npx typeorm -d dist/database/datasource.js migration:run",
+    "start:docker:dev": "npm run migration:run && npm run start:dev",
+    "start:docker:prod": "npm run migration:update && start:prod"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.3",
