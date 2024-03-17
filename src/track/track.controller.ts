@@ -8,13 +8,16 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto, Track, UpdateTrackDto } from './track.model';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoggingInterceptor } from '../logger/logger.interceptor';
 
 @ApiTags('Track')
 @Controller('track')
+@UseInterceptors(LoggingInterceptor)
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 

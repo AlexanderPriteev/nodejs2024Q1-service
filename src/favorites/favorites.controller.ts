@@ -6,15 +6,18 @@ import {
   HttpStatus,
   Param,
   Post,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { FavoritesResponse } from './favorites.model';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Track } from '../track/track.model';
 import { Album } from '../album/album.model';
+import { LoggingInterceptor } from '../logger/logger.interceptor';
 
 @ApiTags('Favorites')
 @Controller('favs')
+@UseInterceptors(LoggingInterceptor)
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 

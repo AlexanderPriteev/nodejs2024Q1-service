@@ -10,6 +10,7 @@ import {
   FavoriteArtist,
   FavoriteTrack,
 } from './favorites.model';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import {
       Album,
       Track,
     ]),
+    LoggerModule,
   ],
   controllers: [FavoritesController],
   providers: [FavoritesService],

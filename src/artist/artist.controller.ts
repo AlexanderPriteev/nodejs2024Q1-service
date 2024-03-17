@@ -8,13 +8,16 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { Artist, CreateArtistDto, UpdateArtistDto } from './artist.model';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoggingInterceptor } from '../logger/logger.interceptor';
 
 @ApiTags('Artist')
 @Controller('artist')
+@UseInterceptors(LoggingInterceptor)
 export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 

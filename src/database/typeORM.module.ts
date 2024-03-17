@@ -40,7 +40,7 @@ const HOST =
         FavoriteTrack,
       ],
       synchronize: false,
-      logging: true,
+      logging: false,
     }),
   ],
 })

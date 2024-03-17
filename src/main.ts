@@ -4,12 +4,14 @@ import { env } from 'node:process';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import 'dotenv/config';
+import { AppLogger } from './logger/logger.service';
 
 const PORT = env.PORT || 4000;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useGlobalPipes(new ValidationPipe());
+  app.useLogger(new AppLogger());
 
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')

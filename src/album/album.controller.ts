@@ -8,14 +8,17 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { AlbumService } from './album.service';
 import { Album, CreateAlbumDto, UpdateAlbumDto } from './album.model';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoggingInterceptor } from '../logger/logger.interceptor';
 
 @ApiTags('Album')
 @Controller('album')
+@UseInterceptors(LoggingInterceptor)
 export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
