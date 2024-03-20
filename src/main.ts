@@ -14,6 +14,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   const logger = new AppLogger();
   app.useLogger(logger);
+  process.on('uncaughtException', (err) => {
+    logger.fatal(`uncaughtException: ${err}`);
+  });
+  process.on('unhandledRejection', (reason) => {
+    logger.fatal(`unhandledRejection: ${reason}`);
+  });
 
   const httpAdapter = app.get<HttpAdapterHost>(HttpAdapterHost);
   app.useGlobalFilters(new AppExceptionsFilter(httpAdapter, logger));
