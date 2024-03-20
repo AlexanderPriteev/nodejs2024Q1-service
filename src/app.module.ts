@@ -6,6 +6,7 @@ import { AlbumModule } from './album/album.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TypeOrmOptionsModule } from './database/typeORM.module';
 import { LoggerModule } from './logger/logger.module';
+import { ExceptionModule } from './exception/exception.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LoggerModule } from './logger/logger.module';
     FavoritesModule,
     TypeOrmOptionsModule,
     LoggerModule,
+    ExceptionModule,
   ],
 })
 export class AppModule {}
