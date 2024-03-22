@@ -1,24 +1,27 @@
 import { LoggerService } from '@nestjs/common';
+import { Logger, createLogger } from 'winston';
+import { loggerConfig } from './logger.config';
 
 export class AppLogger implements LoggerService {
-  private _colorReset = '\u001b[0m';
-  private _colorError = '\u001b[31m';
-  private _colorWarn = '\u001b[33m';
-  private _colorLog = '\u001b[38;5;246m';
+  private logger: Logger;
 
-  log(message: string, isQuery?: boolean) {
-    console.log(`${this._colorLog}LOG:${this._colorReset} ${message}`);
+  constructor() {
+    this.logger = createLogger(loggerConfig);
+  }
+
+  log(message: string) {
+    this.logger.info(message);
   }
 
   error(message: string) {
-    console.log(`${this._colorError}ERROR:${this._colorReset} ${message}`);
+    this.logger.error(message);
   }
 
   fatal(message: string) {
-    console.log(this._colorError + message + this._colorReset);
+    this.logger.log('fatal', message);
   }
 
   warn(message: string) {
-    console.log(this._colorWarn + message + this._colorReset);
+    this.logger.warn(message);
   }
 }
