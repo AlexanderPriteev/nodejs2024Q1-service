@@ -7,6 +7,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { TypeOrmOptionsModule } from './database/typeORM.module';
 import { LoggerModule } from './logger/logger.module';
 import { ExceptionModule } from './exception/exception.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ExceptionModule } from './exception/exception.module';
     TypeOrmOptionsModule,
     LoggerModule,
     ExceptionModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

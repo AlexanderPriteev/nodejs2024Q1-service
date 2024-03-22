@@ -18,7 +18,7 @@ export class AppLogger implements LoggerService {
   }
 
   fatal(message: string) {
-    this.logger.log('fatal', message);
+    this.logger.log('error', message);
   }
 
   warn(message: string) {

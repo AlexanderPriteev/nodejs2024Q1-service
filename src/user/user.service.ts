@@ -3,6 +3,7 @@ import { validate, v4 as uuidv4 } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto, User } from './user.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -22,16 +23,37 @@ export class UserService {
     if (user) return user;
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
+  async getUserByData(dto: CreateUserDto): Promise<User> {
+    const { login, password } = dto;
+    const user = await this.userRepository.findOneBy({ login });
+    if (!user) {
+      throw new HttpException('Invalid User Name', HttpStatus.BAD_REQUEST);
+    }
+    const passwordEquals = await bcrypt.compare(password, user.password);
+    if (!passwordEquals) {
+      throw new HttpException('Invalid User Password', HttpStatus.BAD_REQUEST);
+    }
+    return user;
+  }
 
   async postUser(dto: CreateUserDto): Promise<User> {
+    const { login, password } = dto;
+    const user = await this.userRepository.findOneBy({ login });
+    if (user) {
+      throw new HttpException(
+        'User With Such Name Already Exists',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const newUser: User = {
       id: uuidv4(),
-      login: dto.login,
+      login: login,
       version: 1,
       createdAt: new Date().getTime(),
       updatedAt: new Date().getTime(),
     };
-    const userDB = { ...newUser, password: dto.password };
+    const hash = await bcrypt.hash(password, 10);
+    const userDB = { ...newUser, password: hash };
     await this.userRepository.save(userDB);
     return newUser;
   }
