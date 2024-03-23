@@ -11,6 +11,7 @@ import {
   FavoriteTrack,
 } from './favorites.model';
 import { LoggerModule } from '../logger/logger.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LoggerModule } from '../logger/logger.module';
       Track,
     ]),
     LoggerModule,
+    AuthModule,
   ],
   controllers: [FavoritesController],
   providers: [FavoritesService],

@@ -8,12 +8,14 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { Artist, CreateArtistDto, UpdateArtistDto } from './artist.model';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggingInterceptor } from '../logger/logger.interceptor';
+import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('Artist')
 @Controller('artist')
@@ -22,12 +24,14 @@ export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: [Artist] })
   getUsers(): Promise<Artist[]> {
     return this.artistService.getArtists();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: Artist })
   @ApiResponse({ status: 400, description: 'artistId is invalid' })
   @ApiResponse({ status: 404, description: 'Artist not found' })
@@ -36,6 +40,7 @@ export class ArtistController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 201, type: Artist })
   @ApiResponse({ status: 400, description: 'Does not contain required fields' })
   postUser(@Body() dto: CreateArtistDto): Promise<Artist> {
@@ -43,6 +48,7 @@ export class ArtistController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: Artist })
   @ApiResponse({ status: 400, description: 'artistId is invalid' })
   @ApiResponse({ status: 404, description: 'Artist not found' })
@@ -54,6 +60,7 @@ export class ArtistController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({ status: 204, description: 'Artist removed' })
   @ApiResponse({ status: 400, description: 'artistId is invalid' })

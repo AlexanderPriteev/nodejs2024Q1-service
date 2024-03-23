@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -15,6 +16,7 @@ import { CreateUserDto, UpdatePasswordDto, User } from './user.model';
 
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggingInterceptor } from '../logger/logger.interceptor';
+import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('User')
 @Controller('user')
@@ -23,12 +25,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: [User] })
   getUsers(): Promise<User[]> {
     return this.userService.getUsers();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: User })
   @ApiResponse({ status: 400, description: 'userId is invalid' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -37,6 +41,7 @@ export class UserController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 201, type: User })
   @ApiResponse({ status: 400, description: 'Does not contain required fields' })
   postUser(@Body() dto: CreateUserDto): Promise<User> {
@@ -44,6 +49,7 @@ export class UserController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: User })
   @ApiResponse({ status: 400, description: 'userId is invalid' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -56,6 +62,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({ status: 204, description: 'User removed' })
   @ApiResponse({ status: 400, description: 'userId is invalid' })

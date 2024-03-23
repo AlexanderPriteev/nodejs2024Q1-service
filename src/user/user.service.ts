@@ -27,24 +27,24 @@ export class UserService {
     const { login, password } = dto;
     const user = await this.userRepository.findOneBy({ login });
     if (!user) {
-      throw new HttpException('Invalid User Name', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Invalid User Name', HttpStatus.FORBIDDEN);
     }
     const passwordEquals = await bcrypt.compare(password, user.password);
     if (!passwordEquals) {
-      throw new HttpException('Invalid User Password', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Invalid User Password', HttpStatus.FORBIDDEN);
     }
     return user;
   }
 
   async postUser(dto: CreateUserDto): Promise<User> {
     const { login, password } = dto;
-    const user = await this.userRepository.findOneBy({ login });
-    if (user) {
-      throw new HttpException(
-        'User With Such Name Already Exists',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // const user = await this.userRepository.findOneBy({ login });
+    // if (user) {
+    //   throw new HttpException(
+    //     'User With Such Name Already Exists',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
     const newUser: User = {
       id: uuidv4(),
       login: login,
@@ -66,10 +66,11 @@ export class UserService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    if (user.password !== dto.oldPassword) {
+    const passwordEquals = await bcrypt.compare(dto.oldPassword, user.password);
+    if (!passwordEquals) {
       throw new HttpException('Incorrect oldPassword', HttpStatus.FORBIDDEN);
     }
-    user.password = dto.newPassword;
+    user.password = await bcrypt.hash(dto.newPassword, 10);
     user.version += 1;
     user.createdAt = Number(user.createdAt);
     user.updatedAt = new Date().getTime();

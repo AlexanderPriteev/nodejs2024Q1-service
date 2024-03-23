@@ -8,12 +8,14 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto, Track, UpdateTrackDto } from './track.model';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggingInterceptor } from '../logger/logger.interceptor';
+import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('Track')
 @Controller('track')
@@ -22,12 +24,14 @@ export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: [Track] })
   getUsers(): Promise<Track[]> {
     return this.trackService.getTracks();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: Track })
   @ApiResponse({ status: 400, description: 'trackId is invalid' })
   @ApiResponse({ status: 404, description: 'Track not found' })
@@ -36,6 +40,7 @@ export class TrackController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 201, type: Track })
   @ApiResponse({ status: 400, description: 'Does not contain required fields' })
   postUser(@Body() dto: CreateTrackDto): Promise<Track> {
@@ -43,6 +48,7 @@ export class TrackController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: Track })
   @ApiResponse({ status: 400, description: 'trackId is invalid' })
   @ApiResponse({ status: 404, description: 'Track not found' })
@@ -54,6 +60,7 @@ export class TrackController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({ status: 204, description: 'Track removed' })
   @ApiResponse({ status: 400, description: 'trackId is invalid' })

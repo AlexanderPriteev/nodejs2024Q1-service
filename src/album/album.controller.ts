@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
@@ -15,6 +16,7 @@ import { AlbumService } from './album.service';
 import { Album, CreateAlbumDto, UpdateAlbumDto } from './album.model';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggingInterceptor } from '../logger/logger.interceptor';
+import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('Album')
 @Controller('album')
@@ -23,12 +25,14 @@ export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: [Album] })
   getUsers(): Promise<Album[]> {
     return this.albumService.getAlbums();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: Album })
   @ApiResponse({ status: 400, description: 'albumId is invalid' })
   @ApiResponse({ status: 404, description: 'Album not found' })
@@ -37,6 +41,7 @@ export class AlbumController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 201, type: Album })
   @ApiResponse({ status: 400, description: 'Does not contain required fields' })
   postUser(@Body() dto: CreateAlbumDto): Promise<Album> {
@@ -44,6 +49,7 @@ export class AlbumController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({ status: 200, type: Album })
   @ApiResponse({ status: 400, description: 'albumId is invalid' })
   @ApiResponse({ status: 404, description: 'Album not found' })
@@ -55,6 +61,7 @@ export class AlbumController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiResponse({ status: 204, description: 'Album removed' })
   @ApiResponse({ status: 400, description: 'albumId is invalid' })

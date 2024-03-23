@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoggerModule } from '../logger/logger.module';
 import { AuthController } from './auth.controller';
@@ -13,14 +13,15 @@ import { User } from '../user/user.model';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    UserModule,
+    forwardRef(() => UserModule),
     LoggerModule,
     JwtModule.register({
       secret: env.JWT_SECRET_KEY || 'root',
-      signOptions: { expiresIn: env.TOKEN_EXPIRE_TIME },
+      signOptions: { expiresIn: env.TOKEN_EXPIRE_TIME || '20m' },
     }),
   ],
   providers: [AuthService, UserService],
   controllers: [AuthController],
+  exports: [JwtModule],
 })
 export class AuthModule {}

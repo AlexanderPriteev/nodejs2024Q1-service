@@ -12,9 +12,9 @@ export class LoggingInterceptor implements NestInterceptor {
   constructor(private readonly logger: AppLogger) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const { url, body, params } = context.getArgByIndex(0);
+    const { method, url, body, params } = context.getArgByIndex(0);
     const { statusCode } = context.getArgByIndex(1);
-    const objLog = { url, body, queryParameters: params, statusCode };
+    const objLog = { method, url, body, queryParameters: params, statusCode };
 
     this.logger.log(JSON.stringify(objLog));
 
