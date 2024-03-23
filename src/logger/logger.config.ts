@@ -15,7 +15,9 @@ const nestLevels = {
 const LEVEL =
   env.LOGGER_LEVEL === 'log'
     ? 'info'
-    : nestLevels[env.LOGGER_LEVEL] || 'verbose';
+    : env.LOGGER_LEVEL === 'fatal'
+      ? 'fatal'
+      : nestLevels[env.LOGGER_LEVEL] || 'verbose';
 
 export const loggerConfig = {
   levels: nestLevels,
