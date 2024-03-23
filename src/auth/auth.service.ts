@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto, User } from '../user/user.model';
 import { JwtService } from '@nestjs/jwt';
-import { IToken } from './auth.model';
+import { IPayload, IToken, RefreshTokenDto } from './auth.model';
 import { UserService } from '../user/user.service';
 import { env } from 'node:process';
 import 'dotenv/config';
@@ -15,10 +15,7 @@ export class AuthService {
 
   private refreshTime = env.TOKEN_REFRESH_EXPIRE_TIME || '6h';
   async signup(dto: CreateUserDto): Promise<User> {
-    const user = await this.userService.postUser(dto);
-    console.log(user);
-    return user;
-    // return this.getTokens(user);
+    return await this.userService.postUser(dto);
   }
 
   async login(dto: CreateUserDto): Promise<IToken> {
@@ -26,8 +23,27 @@ export class AuthService {
     return this.getTokens(user);
   }
 
-  private getTokens(user: User): IToken {
-    const payload = { id: user.id, login: user.login };
+  refresh(dto: RefreshTokenDto): IToken {
+    const { refreshToken } = dto;
+    if (!refreshToken)
+      throw new HttpException(
+        'No refreshToken in body',
+        HttpStatus.UNAUTHORIZED,
+      );
+    try {
+      const payload = this.jwtService.verify(refreshToken) as IPayload;
+      return this.getTokens(payload);
+    } catch {
+      throw new HttpException(
+        'Refresh token is invalid or expired',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+  }
+
+  private getTokens(user: User | IPayload): IToken {
+    const userId = user instanceof User ? user.id : user.userId;
+    const payload = { userId, login: user.login };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: this.refreshTime,
