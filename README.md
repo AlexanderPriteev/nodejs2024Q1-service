@@ -3,7 +3,7 @@
 ## Steps to get started:
 1. Download or clone the repository (dev branch)
 2. Install dependencies with `npm i`
-3. Create `.env` file _(./.env)_ and copy data from `.docker.env`
+3. Create `.env` file _(./.env)_ and copy data from `.docker.env` or `.env.example`
 
 ### Running with Docker
 
@@ -31,18 +31,31 @@ _If you haven't encountered any issues with Docker, you can skip this step_
 
 ## Testing:
 
-Run the tests required for the current task [(REST Service)](https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/rest-service/assignment.md):
-```
-npm run test:service
-```
-
 Run all tests:
 ```
-npm run test
+npm run test:auth
+```
+Run `refresh` tests :
+```
+npm run test:refresh
 ```
 
 ---
+## Logging:
+  
+### .env variables
+- `LOGGER_LEVEL` - log level selection
+- `LOGGER_SIZE` - selection of file size for general logs
+- `LOGGER_SIZE_ERROR` - selection of file size for error logs (level fatal and error)
+- `LOGGER_MAX_FILES` - number of log files (specified for general logs and error logs, but used separately)
 
+_for LOGGER_SIZE, LOGGER_SIZE_ERROR, LOGGER_MAX_FILES, refer to [winston-daily-rotate-file](https://www.npmjs.com/package/winston-daily-rotate-file#options) specification._
+
+
+### Levels
+The levels correspond to: `fatal: 0`, `error: 1`, `warn: 2`, `log: 3` _(`log` is equivalent to `info` and any value can be used)_, `debug: 4`, `verbose: 5`
+
+---
 ## Documentation:
 You can view the documentation in **Swagger** at route `/api/docs`. 
 ```
