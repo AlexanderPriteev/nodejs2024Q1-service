@@ -4,9 +4,12 @@ import { CreateUserDto, UpdatePasswordDto, User } from './user.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { env } from 'node:process';
+import 'dotenv/config';
 
 @Injectable()
 export class UserService {
+  private SALT = Number(env.CRYPT_SALT) || 10;
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
@@ -52,7 +55,7 @@ export class UserService {
       createdAt: new Date().getTime(),
       updatedAt: new Date().getTime(),
     };
-    const hash = await bcrypt.hash(password, 10);
+    const hash = await bcrypt.hash(password, this.SALT);
     const userDB = { ...newUser, password: hash };
     await this.userRepository.save(userDB);
     return newUser;
@@ -70,7 +73,7 @@ export class UserService {
     if (!passwordEquals) {
       throw new HttpException('Incorrect oldPassword', HttpStatus.FORBIDDEN);
     }
-    user.password = await bcrypt.hash(dto.newPassword, 10);
+    user.password = await bcrypt.hash(dto.newPassword, this.SALT);
     user.version += 1;
     user.createdAt = Number(user.createdAt);
     user.updatedAt = new Date().getTime();

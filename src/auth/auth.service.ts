@@ -14,6 +14,8 @@ export class AuthService {
   ) {}
 
   private refreshTime = env.TOKEN_REFRESH_EXPIRE_TIME || '6h';
+  private refreshSecret = env.JWT_SECRET_REFRESH_KEY || 'root';
+
   async signup(dto: CreateUserDto): Promise<User> {
     return await this.userService.postUser(dto);
   }
@@ -46,6 +48,7 @@ export class AuthService {
     const payload = { userId, login: user.login };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = this.jwtService.sign(payload, {
+      secret: this.refreshSecret,
       expiresIn: this.refreshTime,
     } as any);
     return { accessToken, refreshToken };
