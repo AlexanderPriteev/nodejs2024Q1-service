@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    ports:
+      - "4000:4000"
+    command: npm run start:docker:dev
+    volumes:
+      - .:/app
+    env_file:
+      - .docker.env
+    depends_on:
+      - postgres
+    restart: on-failure
+    networks:
+      - rs_node
+  postgres:
+    container_name: postgres
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    env_file:
+      - .docker.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - rs_node
+networks:
+  rs_node:
+    driver: bridge
+volumes:
+  dbdata:
