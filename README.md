@@ -3,7 +3,7 @@
 ## Steps to get started:
 1. Download or clone the repository (dev branch)
 2. Install dependencies with `npm i`
-3. Create `.env` file _(./.env)_ and copy data from `.docker.env` or `.env.example`
+3. Create `.env` file _(./.env)_ and copy data from `.env.example`
 
 ### Running with Docker
 

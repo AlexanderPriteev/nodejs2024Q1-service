@@ -23,9 +23,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "migration:generate": "npm run build && typeorm migration:generate -d dist/database/datasource.js src/database/migrations/migration",
-    "migration:run": "npm run build && typeorm -d dist/database/datasource.js",
+    "migration:run": "npm run build && typeorm -d dist/database/datasource.js migration:run",
     "migration:update": "npx typeorm -d dist/database/datasource.js migration:run",
-    "start:docker:dev": "npm run migration:run && cross-env NODE_ENV=docker && npm run start:dev",
+    "start:docker:dev": "npm run migration:run && cross-env NODE_ENV=docker npm run start:dev",
     "start:docker:prod": "npm run migration:update && start:prod",
     "scan":"npx snyk auth && npx snyk container test nodejs2024q1-service-app",
     "scan:name": "npx snyk auth && npx snyk container test"
