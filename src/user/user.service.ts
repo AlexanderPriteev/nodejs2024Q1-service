@@ -3,7 +3,7 @@ import { validate, v4 as uuidv4 } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto, User } from './user.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { env } from 'node:process';
 import 'dotenv/config';
 
